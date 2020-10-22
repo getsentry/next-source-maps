@@ -1,0 +1,11 @@
+{
+  "name": "next-sentry-source-maps",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/kamilogorek/next-sentry-source-maps.git",
+  "author": "Kamil Ogórek <kamil.ogorek@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@sentry/webpack-plugin": "^1.13.0"
+  }
+}
