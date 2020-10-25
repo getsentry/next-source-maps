@@ -6,6 +6,7 @@
   "author": "Kamil Ogórek <kamil.ogorek@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@sentry/webpack-plugin": "^1.13.0"
+    "@sentry/webpack-plugin": "^1.13.0",
+    "@zeit/next-source-maps": "0.0.4-canary.1"
   }
 }

@@ -1,24 +1,25 @@
 const SentryWebpackPlugin = require("@sentry/webpack-plugin");
+const withSourceMaps = require("@zeit/next-source-maps");
 
-let {
-  SENTRY_ORG,
-  SENTRY_PROJECT,
-  SENTRY_RELEASE,
-  SENTRY_AUTH_TOKEN,
-  VERCEL_GITHUB_COMMIT_SHA,
-  VERCEL_GITLAB_COMMIT_SHA,
-  VERCEL_BITBUCKET_COMMIT_SHA,
-} = process.env;
+const { env } = process;
 
-SENTRY_RELEASE =
-  SENTRY_RELEASE ||
-  VERCEL_GITHUB_COMMIT_SHA ||
-  VERCEL_GITLAB_COMMIT_SHA ||
-  VERCEL_BITBUCKET_COMMIT_SHA;
+module.exports = (opts = {}) => {
+  const pluginOptions = {
+    org: env.SENTRY_ORG,
+    project: env.SENTRY_PROJECT,
+    release:
+      env.SENTRY_RELEASE ||
+      env.NEXT_PUBLIC_SENTRY_RELEASE ||
+      env.VERCEL_GITHUB_COMMIT_SHA ||
+      env.VERCEL_GITLAB_COMMIT_SHA ||
+      env.VERCEL_BITBUCKET_COMMIT_SHA,
+    authToken: env.SENTRY_AUTH_TOKEN,
+    ...opts,
+  };
 
-module.exports = (pluginOptions = {}) => {
   return (nextConfig = {}) => {
-    return Object.assign({}, nextConfig, {
+    return {
+      ...nextConfig,
       webpack(config, options) {
         if (!options.defaultLoaders) {
           throw new Error(
@@ -29,29 +30,25 @@ module.exports = (pluginOptions = {}) => {
         const { dev } = options;
 
         if (!dev) {
-          if (!SENTRY_ORG && !pluginOptions.org)
+          if (!pluginOptions.org)
             throw new Error(
               "Missing required `SENTRY_ORG` environment variable or `org` plugin option."
             );
-          if (!SENTRY_PROJECT && !pluginOptions.project)
+          if (!pluginOptions.project)
             throw new Error(
               "Missing required `SENTRY_PROJECT` environment variable or `project` plugin option."
             );
-          if (!SENTRY_RELEASE && !pluginOptions.release)
+          if (!pluginOptions.release)
             throw new Error(
               "Missing required `SENTRY_RELEASE` environment variable or `release` plugin option."
             );
-          if (!SENTRY_AUTH_TOKEN && !pluginOptions.authToken)
+          if (!pluginOptions.authToken)
             throw new Error(
               "Missing required `SENTRY_AUTH_TOKEN` environment variable or `authToken` plugin option."
             );
 
           config.plugins.push(
             new SentryWebpackPlugin({
-              org: SENTRY_ORG || pluginOptions.org,
-              project: SENTRY_PROJECT || pluginOptions.project,
-              release: SENTRY_RELEASE || pluginOptions.release,
-              authToken: SENTRY_AUTH_TOKEN || pluginOptions.authToken,
               include: ".next",
               ignore: ["node_modules"],
               stripPrefix: ["webpack://_N_E/"], // Is it necessary? — Kamil
@@ -66,6 +63,17 @@ module.exports = (pluginOptions = {}) => {
         }
         return config;
       },
-    });
+    };
   };
 };
+
+const withSentrySourceMaps = (config) =>
+  withSentry()(
+    withSourceMaps({
+      devtool: "hidden-source-map",
+    })(config)
+  );
+
+exports.withSentry = withSentry;
+exports.withSourceMaps = withSourceMaps;
+exports.withSentrySourceMaps = withSentrySourceMaps;
