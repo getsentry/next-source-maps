@@ -3,7 +3,7 @@ const withSourceMaps = require("@zeit/next-source-maps");
 
 const { env } = process;
 
-module.exports = (opts = {}) => {
+const withSentry = (opts = {}) => {
   const pluginOptions = {
     org: env.SENTRY_ORG,
     project: env.SENTRY_PROJECT,
