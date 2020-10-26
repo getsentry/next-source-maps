@@ -1,5 +1,5 @@
 {
-  "name": "@next/sentry-source-maps",
+  "name": "@next/with-sentry-source-maps",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/kamilogorek/next-sentry-source-maps.git",
