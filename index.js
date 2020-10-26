@@ -67,12 +67,7 @@ const withSentry = (opts = {}) => {
   };
 };
 
-const withSentrySourceMaps = (config) =>
-  withSentry()(
-    withSourceMaps({
-      devtool: "hidden-source-map",
-    })(config)
-  );
+const withSentrySourceMaps = (config) => withSentry()(withSourceMaps()(config));
 
 exports.withSentry = withSentry;
 exports.withSourceMaps = withSourceMaps;
