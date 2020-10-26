@@ -70,5 +70,6 @@ const withSentry = (opts = {}) => {
 const withSentrySourceMaps = (config) => withSentry()(withSourceMaps()(config));
 
 module.exports = withSentrySourceMaps;
+module.exports.withSentrySourceMaps = withSentrySourceMaps;
 module.exports.withSentry = withSentry;
 module.exports.withSourceMaps = withSourceMaps;
